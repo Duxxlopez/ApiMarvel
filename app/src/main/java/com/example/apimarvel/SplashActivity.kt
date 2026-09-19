@@ -32,7 +32,7 @@ class SplashActivity : AppCompatActivity() {
         // Cargar y reproducir el GIF de los Vengadores usando Glide
         Glide.with(this)
             .asGif()
-            .load(R.drawable.avengers)
+            .load(R.raw.avengers)
             .into(imageViewGif)
 
         // Temporizador de 5 segundos exactos (5000 milisegundos)
@@ -42,6 +42,6 @@ class SplashActivity : AppCompatActivity() {
             // Añadimos una transición suave
             overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
             finish()
-        }, 9000)
+        }, 5000)
     }
 }
