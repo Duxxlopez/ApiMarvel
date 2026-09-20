@@ -38,12 +38,12 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
-        // Lista de los 5 ejemplos de los Vengadores
+        // Lista de los 5 los Vengadores
         val avengersList = listOf(
             MarvelCharacter(1009368, "Iron Man", 2600, 640, 3600, R.drawable.iron_man),
             MarvelCharacter(1009220, "Captain America", 2400, 720, 3800, R.drawable.captain_america),
             MarvelCharacter(1009664, "Thor", 1800, 520, 2900, R.drawable.thor),
-            MarvelCharacter(1009351, "Hulk", 2100, 480, 2700, R.drawable.hulk),
+            MarvelCharacter(1009351, "Hulk", 2100, 480, 2700, R.drawable.hul),
             MarvelCharacter(1009189, "Black Widow", 600, 150, 800, R.drawable.black_widow)
         )
 
