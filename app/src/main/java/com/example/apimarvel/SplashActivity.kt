@@ -35,7 +35,7 @@ class SplashActivity : AppCompatActivity() {
         // Cargar y reproducir el GIF de los Vengadores usando Glide
         Glide.with(this)
             .asGif()
-            .load(R.raw.avengers)
+            .load(R.drawable.avengers)
             .into(imageViewGif)
 
         // Reproducir el sonido del intro

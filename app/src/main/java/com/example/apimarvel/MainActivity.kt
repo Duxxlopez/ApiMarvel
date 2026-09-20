@@ -22,7 +22,7 @@ data class MarvelCharacter(
     val comicsCount: Int,
     val seriesCount: Int,
     val storiesCount: Int,
-    val imageUrl: String
+    val image: Any // Soporta URL (String) o Resource ID (Int)
 )
 
 class MainActivity : AppCompatActivity() {
@@ -40,11 +40,11 @@ class MainActivity : AppCompatActivity() {
 
         // Lista de los 5 ejemplos de los Vengadores
         val avengersList = listOf(
-            MarvelCharacter(1009368, "Iron Man", 2600, 640, 3600, "https://w0.peakpx.com/wallpaper/559/999/HD-wallpaper-iron-man-tony-stark.jpg"),
-            MarvelCharacter(1009220, "Captain America", 2400, 720, 3800, "https://w0.peakpx.com/wallpaper/578/900/HD-wallpaper-captain-america-steve-rogers.jpg"),
-            MarvelCharacter(1009664, "Thor", 1800, 520, 2900, "https://w0.peakpx.com/wallpaper/930/1004/HD-wallpaper-thor-god-of-thunder.jpg"),
-            MarvelCharacter(1009351, "Hulk", 2100, 480, 2700, "https://w0.peakpx.com/wallpaper/326/226/HD-wallpaper-the-incredible-hulk.jpg"),
-            MarvelCharacter(1009189, "Black Widow", 600, 150, 800, "https://w0.peakpx.com/wallpaper/279/531/HD-wallpaper-black-widow-natasha-romanoff.jpg")
+            MarvelCharacter(1009368, "Iron Man", 2600, 640, 3600, R.drawable.iron_man),
+            MarvelCharacter(1009220, "Captain America", 2400, 720, 3800, R.drawable.captain_america),
+            MarvelCharacter(1009664, "Thor", 1800, 520, 2900, R.drawable.thor),
+            MarvelCharacter(1009351, "Hulk", 2100, 480, 2700, R.drawable.hulk),
+            MarvelCharacter(1009189, "Black Widow", 600, 150, 800, R.drawable.black_widow)
         )
 
         val rvHeroes = findViewById<RecyclerView>(R.id.rvHeroes)
@@ -100,9 +100,9 @@ class HeroAdapter(private val heroes: List<MarvelCharacter>) :
         holder.tvStories.text = "Historias: ${hero.storiesCount}"
 
         Glide.with(holder.itemView.context)
-            .load(hero.imageUrl)
+            .load(hero.image)
+            .centerCrop()
             .placeholder(android.R.drawable.ic_menu_gallery)
-            .circleCrop()
             .into(holder.ivHero)
     }
 

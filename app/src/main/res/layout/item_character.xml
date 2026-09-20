@@ -19,7 +19,6 @@
             android:layout_width="150dp"
             android:layout_height="150dp"
             android:scaleType="centerCrop"
-            android:background="#F5F5F5"
             android:contentDescription="Imagen del Héroe" />
 
         <TextView
