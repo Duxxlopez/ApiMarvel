@@ -27,6 +27,12 @@
             android:name=".MainActivity"
             android:exported="false" />
 
+        <!-- Actividad de Detalle -->
+        <activity
+            android:name=".DetailActivity"
+            android:exported="false"
+            android:theme="@style/Theme.ApiMarvel" />
+
     </application>
 
 </manifest>

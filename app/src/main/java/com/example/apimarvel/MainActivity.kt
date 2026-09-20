@@ -1,9 +1,15 @@
 package com.example.apimarvel
 
+import android.app.AlertDialog
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
@@ -13,16 +19,18 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import java.security.MessageDigest
 
-// Modelo de datos similar a la estructura de la API de Marvel
+// Modelo de datos
 data class MarvelCharacter(
     val id: Int,
     val name: String,
+    val description: String,
     val comicsCount: Int,
     val seriesCount: Int,
     val storiesCount: Int,
-    val image: Any // Soporta URL (String) o Resource ID (Int)
+    val imageResId: Int,
+    val detailGifResId: Int? = null,
+    val gifDurationMs: Long = 3000L // Duración por defecto
 )
 
 class MainActivity : AppCompatActivity() {
@@ -38,45 +46,89 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
-        // Lista de los 5 los Vengadores
+        // Lista de los 5 Vengadores con sus GIFs personalizados y tiempos específicos
         val avengersList = listOf(
-            MarvelCharacter(1009368, "Iron Man", 2600, 640, 3600, R.drawable.iron_man),
-            MarvelCharacter(1009220, "Captain America", 2400, 720, 3800, R.drawable.captain_america),
-            MarvelCharacter(1009664, "Thor", 1800, 520, 2900, R.drawable.thor),
-            MarvelCharacter(1009351, "Hulk", 2100, 480, 2700, R.drawable.hul),
-            MarvelCharacter(1009189, "Black Widow", 600, 150, 800, R.drawable.black_widow)
+            MarvelCharacter(1009368, "Iron Man", 
+                "Tony Stark es un genio inventor y multimillonario que usa su armadura de alta tecnología para proteger al mundo.", 
+                2600, 640, 3600, R.drawable.iron_man, R.drawable.iron_man_gif, 3000L),
+            MarvelCharacter(1009220, "Captain America", 
+                "Steve Rogers, el supersoldado de la Segunda Guerra Mundial, es el símbolo viviente de la libertad y el líder de los Vengadores.", 
+                2400, 720, 3800, R.drawable.captain_america, R.drawable.captain_america_gif, 3000L),
+            MarvelCharacter(1009664, "Thor", 
+                "El Dios del Trueno y príncipe de Asgard, Thor empuña el martillo Mjolnir para controlar las tormentas y luchar contra el mal.", 
+                1800, 520, 2900, R.drawable.thor, R.drawable.thor_gif, 3000L),
+            MarvelCharacter(1009351, "Hulk", 
+                "Tras ser expuesto a radiación gamma, el Dr. Bruce Banner se transforma en un gigante verde de fuerza inconmensurable cuando se enfurece.", 
+                2100, 480, 2700, R.drawable.hul, R.drawable.hulk_gif, 6000L), // Hulk dura más (6 seg)
+            MarvelCharacter(1009189, "Black Widow", 
+                "Natasha Romanoff es una de las espías y asesinas más letales del mundo, convertida en una heroína clave para la seguridad global.", 
+                600, 150, 800, R.drawable.black_widow, R.drawable.black_widow_gif, 5000L) // Widow dura más (5 seg)
         )
 
         val rvHeroes = findViewById<RecyclerView>(R.id.rvHeroes)
         rvHeroes.layoutManager = LinearLayoutManager(this)
-        rvHeroes.adapter = HeroAdapter(avengersList)
+        
+        // Configuramos el adaptador para mostrar el Diálogo al hacer click
+        rvHeroes.adapter = HeroAdapter(avengersList) { hero ->
+            mostrarDetallePersonaje(hero)
+        }
     }
 
-    /**
-     * Función útil para cuando conectes la API Real de Marvel.
-     */
-    private fun md5(s: String): String {
-        val MD5 = "MD5"
-        try {
-            val digest = MessageDigest.getInstance(MD5)
-            digest.update(s.toByteArray())
-            val messageDigest = digest.digest()
-            val hexString = StringBuilder()
-            for (aMessageDigest in messageDigest) {
-                var h = Integer.toHexString(0xFF and aMessageDigest.toInt())
-                while (h.length < 2) h = "0$h"
-                hexString.append(h)
-            }
-            return hexString.toString()
-        } catch (e: Exception) {
-            e.printStackTrace()
+    private fun mostrarDetallePersonaje(hero: MarvelCharacter) {
+        val inflater = LayoutInflater.from(this)
+        val view = inflater.inflate(R.layout.dialog_hero_detail, null)
+
+        val tvName = view.findViewById<TextView>(R.id.tvDialogName)
+        val tvDesc = view.findViewById<TextView>(R.id.tvDialogDescription)
+        val tvComics = view.findViewById<TextView>(R.id.tvDialogComics)
+        val tvSeries = view.findViewById<TextView>(R.id.tvDialogSeries)
+        val tvStories = view.findViewById<TextView>(R.id.tvDialogStories)
+        val ivHero = view.findViewById<ImageView>(R.id.ivDialogHero)
+        val ivGif = view.findViewById<ImageView>(R.id.ivDialogGif)
+        val cardGif = view.findViewById<View>(R.id.cardGif)
+        val btnClose = view.findViewById<Button>(R.id.btnDialogClose)
+
+        // Asignar datos
+        tvName.text = "Nombre: ${hero.name}"
+        tvDesc.text = hero.description
+        tvComics.text = hero.comicsCount.toString()
+        tvSeries.text = hero.seriesCount.toString()
+        tvStories.text = hero.storiesCount.toString()
+        
+        Glide.with(this).load(hero.imageResId).circleCrop().into(ivHero)
+
+        // Cargar el GIF de transición
+        val gifToLoad = hero.detailGifResId ?: R.drawable.avengers
+
+        Glide.with(this)
+            .asGif()
+            .load(gifToLoad)
+            .into(ivGif)
+
+        // Crear el diálogo
+        val dialog = AlertDialog.Builder(this)
+            .setView(view)
+            .create()
+
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+        btnClose.setOnClickListener {
+            dialog.dismiss()
         }
-        return ""
+
+        dialog.show()
+
+        // Desaparecer el GIF después del tiempo personalizado del héroe
+        Handler(Looper.getMainLooper()).postDelayed({
+            cardGif.visibility = View.GONE
+        }, hero.gifDurationMs)
     }
 }
 
-class HeroAdapter(private val heroes: List<MarvelCharacter>) :
-    RecyclerView.Adapter<HeroAdapter.HeroViewHolder>() {
+class HeroAdapter(
+    private val heroes: List<MarvelCharacter>,
+    private val onItemClick: (MarvelCharacter) -> Unit
+) : RecyclerView.Adapter<HeroAdapter.HeroViewHolder>() {
 
     class HeroViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val ivHero: ImageView = view.findViewById(R.id.ivHero)
@@ -100,10 +152,13 @@ class HeroAdapter(private val heroes: List<MarvelCharacter>) :
         holder.tvStories.text = "Historias: ${hero.storiesCount}"
 
         Glide.with(holder.itemView.context)
-            .load(hero.image)
-            .centerCrop()
-            .placeholder(android.R.drawable.ic_menu_gallery)
+            .load(hero.imageResId)
+            .circleCrop()
             .into(holder.ivHero)
+
+        holder.itemView.setOnClickListener {
+            onItemClick(hero)
+        }
     }
 
     override fun getItemCount(): Int = heroes.size

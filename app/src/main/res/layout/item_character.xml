@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="12dp"
+    app:cardBackgroundColor="@android:color/transparent"
     app:cardCornerRadius="20dp"
     app:cardElevation="6dp">
 
@@ -12,6 +13,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:orientation="vertical"
+        android:background="@drawable/bg_card_marvel"
         android:padding="20dp">
 
         <ImageView
@@ -28,20 +30,21 @@
             android:layout_marginTop="16dp"
             android:text="Nombre:---"
             android:textSize="22sp"
-            android:textColor="#333333"
+            android:textColor="@android:color/white"
             android:textStyle="bold" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_marginVertical="12dp"
-            android:background="#DDDDDD" />
+            android:background="#444444" />
 
         <TextView
             android:id="@+id/tvHeroComics"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Comics: --"
+            android:textColor="@android:color/white"
             android:textSize="16sp" />
 
         <TextView
@@ -50,6 +53,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:text="Series: --"
+            android:textColor="@android:color/white"
             android:textSize="16sp" />
 
         <TextView
@@ -58,6 +62,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:text="Historias: --"
+            android:textColor="@android:color/white"
             android:textSize="16sp" />
 
     </LinearLayout>
